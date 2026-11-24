@@ -1,0 +1,19 @@
+name: build-vnt2-cli
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [master, main]
+
+jobs:
+  windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - name: Build vnt2_cli
+        run: cargo build --release --bin vnt2_cli --features vnt-ipc
+      - uses: actions/upload-artifact@v4
+        with:
+          name: vnt2_cli-windows-x64
+          path: target/release/vnt2_cli.exe
