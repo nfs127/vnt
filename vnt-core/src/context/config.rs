@@ -526,7 +526,6 @@ impl FromStr for DeviceMode {
     }
 }
 
-#[derive(Debug, Clone, Default)]
 /// 节点角色：controller 主动向所有节点打洞；agent 只响应，不主动发起
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Default, serde::Serialize, serde::Deserialize)]
 #[serde(rename_all = "lowercase")]
@@ -535,6 +534,8 @@ pub enum Role {
     Controller,
     Agent,
 }
+
+#[derive(Debug, Clone, Default)]
 pub struct Config {
     pub server_addr: Vec<ProtocolAddress>,
     pub peer_address: Vec<PeerAddress>,
