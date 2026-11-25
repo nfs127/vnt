@@ -527,6 +527,14 @@ impl FromStr for DeviceMode {
 }
 
 #[derive(Debug, Clone, Default)]
+/// 节点角色：controller 主动向所有节点打洞；agent 只响应，不主动发起
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Default, serde::Serialize, serde::Deserialize)]
+#[serde(rename_all = "lowercase")]
+pub enum Role {
+    #[default]
+    Controller,
+    Agent,
+}
 pub struct Config {
     pub server_addr: Vec<ProtocolAddress>,
     pub peer_address: Vec<PeerAddress>,
@@ -542,6 +550,8 @@ pub struct Config {
     pub ip: Option<VirtualIp>,
     pub password: Option<String>,
     pub no_punch: bool,
+    /// 节点角色；Agent 不主动打洞，只响应主控端发起的打洞
+    pub role: Role,
     pub no_broadcast: bool,
     /// 允许与由服务端终结的 IKEv2/IPsec 客户端互通。
     pub allow_ikev2: bool,
