@@ -103,25 +103,23 @@ pub async fn init_tunnel(
     let local_tcp_port = local_tcp_addr.map(|addr| addr.port()).unwrap_or_default();
     let route_table = app_state.route_table.clone();
     let socket_manager = P2pOutbound::new(puncher.clone(), route_table.clone(), packet_crypto);
-    if config.automatic_punch {
-        let nat_app_state = app_state.clone();
-        let nat_puncher = puncher.clone();
-        let nat_policy = config.policy.clone();
-        task_group.spawn(async move {
-            my_nat_info(nat_app_state, nat_puncher, nat_policy).await;
-        });
-        task_group.spawn(query_udp_public_addr_loop(
-            app_state.clone(),
-            puncher.clone(),
-            config.policy.clone(),
-        ));
-        task_group.spawn(query_tcp_public_addr_loop(
-            app_state.clone(),
-            local_tcp_port,
-            config.default_interface.clone(),
-            config.policy.clone(),
-        ));
-    }
+    let nat_app_state = app_state.clone();
+    let nat_puncher = puncher.clone();
+    let nat_policy = config.policy.clone();
+    task_group.spawn(async move {
+        my_nat_info(nat_app_state, nat_puncher, nat_policy).await;
+    });
+    task_group.spawn(query_udp_public_addr_loop(
+        app_state.clone(),
+        puncher.clone(),
+        config.policy.clone(),
+    ));
+    task_group.spawn(query_tcp_public_addr_loop(
+        app_state.clone(),
+        local_tcp_port,
+        config.default_interface.clone(),
+        config.policy.clone(),
+    ));
 
     task_group.spawn(route_timeout_task(
         route_table.clone(),
