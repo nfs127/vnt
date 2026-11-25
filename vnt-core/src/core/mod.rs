@@ -285,7 +285,7 @@ impl NetworkManager {
             P2pInitConfig {
                 tunnel_addr: config.tunnel_addr.clone(),
                 tunnel_port: config.tunnel_port,
-                automatic_punch: true,
+                automatic_punch: config.role != crate::context::config::Role::Agent,
                 policy: runtime_policy.clone(),
                 default_interface: default_interface.clone(),
                 identity: node_identity.clone(),
