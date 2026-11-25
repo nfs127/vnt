@@ -517,6 +517,11 @@ fn build_from_args_only(args: Args) -> anyhow::Result<(Config, CtrlConfig)> {
         tunnel_addr,
         tunnel_port,
         event_script: args.event_script,
+        role: if args.agent {
+            vnt_core::context::config::Role::Agent
+        } else {
+            vnt_core::context::config::Role::Controller
+        },
         ..Default::default()
     };
     let ctrl_config = CtrlConfig {
