@@ -241,6 +241,9 @@ pub struct Args {
     /// 关闭自动 P2P 打洞；显式 peer-address 仍可直连
     #[clap(long)]
     pub no_punch: bool,
+    /// 以被控端角色运行：只响应主控端发起的打洞，不主动连接其他节点
+    #[clap(long)]
+    pub agent: bool,
     /// 关闭虚拟网络内的 IPv4 广播和组播转发
     #[clap(long)]
     pub no_broadcast: bool,
@@ -418,6 +421,11 @@ fn build_from_args_and_file(args: Args, file: FileConfig) -> anyhow::Result<(Con
         network_code,
         ip: args.ip.or(file.ip),
         no_punch: args.no_punch || file.no_punch.unwrap_or(false),
+        role: if args.agent {
+            vnt_core::context::config::Role::Agent
+        } else {
+            vnt_core::context::config::Role::Controller
+        },
         no_broadcast: args.no_broadcast || file.no_broadcast.unwrap_or(false),
         allow_ikev2: args.allow_ikev2 || file.allow_ikev2.unwrap_or(false),
         allow_wireguard: args.allow_wireguard || file.allow_wireguard.unwrap_or(false),
@@ -564,6 +572,7 @@ fn build_from_file_only(file: FileConfig) -> anyhow::Result<(Config, CtrlConfig)
             .ok_or_else(|| anyhow!("network_code is required"))?,
         ip: file.ip,
         no_punch: file.no_punch.unwrap_or(false),
+        role: vnt_core::context::config::Role::Controller,
         no_broadcast: file.no_broadcast.unwrap_or(false),
         allow_ikev2: file.allow_ikev2.unwrap_or(false),
         allow_wireguard: file.allow_wireguard.unwrap_or(false),
