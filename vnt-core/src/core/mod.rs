@@ -319,7 +319,7 @@ impl NetworkManager {
                 node_identity.clone(),
             ));
         }
-        {
+        if config.role != crate::context::config::Role::Agent {
             let punch_state = app_state.clone();
             let punch_ctx = PunchTaskContext {
                 network: app_state.network.clone(),
