@@ -21,7 +21,7 @@ use std::sync::Arc;
 use std::time::Duration;
 use tokio::sync::{OwnedSemaphorePermit, Semaphore};
 
-const MAX_CONCURRENT_PUNCHES: usize = 4;
+const MAX_CONCURRENT_PUNCHES: usize = 6;
 const PUNCH_POLICIES: [PunchPolicy; 4] = [
     PunchPolicy::IPv4Tcp,
     PunchPolicy::IPv4Udp,
