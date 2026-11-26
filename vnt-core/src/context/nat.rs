@@ -156,12 +156,12 @@ impl PunchBackoff {
     const NAT_CHANGE_CAP: Duration = Duration::from_secs(600); // NAT 变化后最多等待 10 分钟
     const RETRY_BACKOFF: [Duration; 7] = [
         Duration::from_secs(5),
+        Duration::from_secs(5),
         Duration::from_secs(10),
+        Duration::from_secs(15),
         Duration::from_secs(30),
         Duration::from_secs(60),
-        Duration::from_secs(300),
-        Duration::from_secs(900),
-        Duration::from_secs(3_600),
+        Duration::from_secs(120),
     ];
 
     #[cfg(test)]
