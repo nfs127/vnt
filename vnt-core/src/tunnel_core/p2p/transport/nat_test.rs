@@ -40,8 +40,9 @@ async fn my_nat_info_impl(app_context: &AppState, puncher: &Puncher, policy: &Ru
             // request through Puncher::send_to.
             // VNT tracks one public mapping for the Puncher-owned main UDP
             // endpoint and does not expose the core's IPv4/IPv6 socket layout.
-            nat_info.public_udp_ports = vec![0];
-            nat_info.stun_mapped_ports.clear();
+            if !nat_info.stun_mapped_ports.is_empty() {
+                nat_info.public_udp_ports = nat_info.stun_mapped_ports.clone();
+            }
             let nat_type = nat_info.nat_type;
             log::info!(
                 "nat_type:{nat_type:?},public_ips:{:?},port_range={}",
