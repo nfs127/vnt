@@ -40,9 +40,8 @@ async fn my_nat_info_impl(app_context: &AppState, puncher: &Puncher, policy: &Ru
             // request through Puncher::send_to.
             // VNT tracks one public mapping for the Puncher-owned main UDP
             // endpoint and does not expose the core's IPv4/IPv6 socket layout.
-            if !nat_info.stun_mapped_ports.is_empty() {
-                nat_info.public_udp_ports = nat_info.stun_mapped_ports.clone();
-            }
+            nat_info.public_udp_ports = vec![0];
+            nat_info.stun_mapped_ports.clear();
             let nat_type = nat_info.nat_type;
             log::info!(
                 "nat_type:{nat_type:?},public_ips:{:?},port_range={}",
@@ -72,15 +71,6 @@ pub async fn query_udp_public_addr_loop(
             if punch_changes.changed().await.is_err() {
                 return;
             }
-            continue;
-        }
-        if app_context
-            .get_nat_info()
-            .is_some_and(|info| info.nat_type == NatType::Symmetric)
-        {
-            // NAT type can change while the task is alive. Keep polling so
-            // UDP public-port discovery resumes after returning to Cone NAT.
-            wait_or_policy_change(Duration::from_secs(60), &mut changes, &mut punch_changes).await;
             continue;
         }
         let configured = policy.load().udp_stun.clone();
