@@ -73,6 +73,15 @@ pub async fn query_udp_public_addr_loop(
             }
             continue;
         }
+        if app_context
+            .get_nat_info()
+            .is_some_and(|info| info.nat_type == NatType::Symmetric)
+        {
+            // NAT type can change while the task is alive. Keep polling so
+            // UDP public-port discovery resumes after returning to Cone NAT.
+            wait_or_policy_change(Duration::from_secs(60), &mut changes, &mut punch_changes).await;
+            continue;
+        }
         let configured = policy.load().udp_stun.clone();
         let defaults;
         let udp_stun_servers = if configured.is_empty() {
