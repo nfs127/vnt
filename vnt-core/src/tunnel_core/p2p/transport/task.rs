@@ -59,7 +59,7 @@ pub async fn init_tunnel(
         .udp_port(tunnel_port)
         .tcp_port(tunnel_port)
         .tcp_codec(Box::new(LengthPrefixedInitCodec))
-        .max_assistant_sockets(2)
+        .max_assistant_sockets(8)
         .max_udp_datagram_size(4096);
     for addr in &config.tunnel_addr {
         tunnel_config = match addr {
